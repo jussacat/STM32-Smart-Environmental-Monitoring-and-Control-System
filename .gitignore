@@ -1,0 +1,18 @@
+# Build output
+build/
+
+# Object files
+*.o
+*.d
+
+# Binary output
+*.elf
+*.bin
+*.hex
+
+# VS Code
+.vscode/*.log
+
+# OS files
+.DS_Store
+Thumbs.db
