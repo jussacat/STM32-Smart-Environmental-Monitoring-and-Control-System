@@ -19,7 +19,6 @@ const char *DayName[] =
     "SAT"
 };
 
-
 static uint8_t DecToBCD(uint8_t dec)
 {
     return ((dec / 10) << 4) | (dec % 10);
@@ -173,73 +172,4 @@ void RTC_GetTime(RTC_Time_t *t)
 
     t->year  = 2000 + BCDToDec(I2C2_Read_NACK());
     I2C2_Stop();
-}
-
-void RTC_PrintTime(uint8_t hour, uint8_t min, uint8_t sec, 
-    uint8_t day, uint8_t date, uint8_t month, uint16_t year){
-    
-    RTC_Time_t rtc;
-    char timebuff[20];
-    char dateofmonth[16];
-    RTC_Time_t old = {0};
-
-    rtc.sec   = sec;
-    rtc.min   = min;
-    rtc.hour  = hour;
-
-    rtc.day   = day;      
-    rtc.date  = date;
-    rtc.month = month;
-    rtc.year  = year;
-    
-    OLED_Init();
-    
-    OLED_Clear();
-    OLED_SetCursor(10, 0);
-    OLED_PrintString("ENVI SYSTEM");
-    delay_ms(2000);
-
-    RTC_Init();
-
-    OLED_Clear();
-    OLED_SetCursor(10, 0);
-    OLED_PrintString("INIT RTC...");
-    delay_ms(2000);
-        
-    RTC_SetTime(&rtc);
-    RTC_GetTime(&rtc);
-    
-    OLED_Clear();
-    sprintf(dateofmonth,"%s, %02d/%02d/%04d", DayName[rtc.day], rtc.date, rtc.month, rtc.year);
-    OLED_SetCursor(0,0);
-    OLED_PrintString(dateofmonth);
-
-    OLED_SetCursor(0,5);
-    sprintf(timebuff,"%02d:%02d:%02d", rtc.hour, rtc.min, rtc.sec);
-    OLED_PrintString(timebuff);
-
-    old = rtc;
-    while(1){
-        RTC_GetTime(&rtc);
-        if(rtc.sec != old.sec){
-            sprintf(timebuff, "%02d:%02d:%02d", rtc.hour, rtc.min, rtc.sec);
-            OLED_SetCursor(0,5);
-            OLED_PrintString(timebuff);
-
-            old.hour = rtc.hour;
-            old.min  = rtc.min;
-            old.sec  = rtc.sec;
-        }
-
-        if(rtc.date  != old.date  || rtc.month != old.month || rtc.year  != old.year){
-            sprintf(dateofmonth,"%s, %02d/%02d/%04d", DayName[rtc.day], rtc.date, rtc.month, rtc.year);
-            OLED_SetCursor(0,0);
-            OLED_PrintString(dateofmonth);
-            old.day   = rtc.day;
-            old.date  = rtc.date;
-            old.month = rtc.month;
-            old.year  = rtc.year;
-        }
-        delay_ms(100);
-    }
 }

@@ -3,13 +3,11 @@
 
 #include <stdint.h> 
 
-//1. Địa chỉ gốc của các bus giao tiếp
 #define PERIPH_BASE 0x40000000U 
 #define APB1PERIPH_BASE PERIPH_BASE 
 #define APB2PERIPH_BASE (PERIPH_BASE + 0x10000U) 
 #define AHBPERIPH_BASE (PERIPH_BASE + 0x20000U)
 
-// 2. Địa chỉ gốc của các ngoại vi cụ thể 
 #define RCC_BASE        (AHBPERIPH_BASE + 0x1000U) 
 #define GPIOA_BASE      (APB2PERIPH_BASE + 0x0800U) 
 #define GPIOB_BASE      (APB2PERIPH_BASE + 0x0C00U)

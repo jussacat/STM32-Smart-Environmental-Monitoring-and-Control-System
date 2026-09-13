@@ -3,10 +3,11 @@
 
 #include "stm32f10x.h"
 
-// Khởi tạo UART1 với tốc độ truyền (Baudrate) mong muốn
 void UART1_Init(uint32_t baudrate);
 
-// Gửi một ký tự
 void UART1_SendChar(char c);
 
+char UART1_ReceiveChar(void);
+
+void UART1_SendString(const char *str);
 #endif /* UART_H */

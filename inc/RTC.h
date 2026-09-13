@@ -29,15 +29,10 @@ typedef struct{
 
 extern const char *DayName[];
 
-// Khởi tạo RTC
 void RTC_Init(void);
 
-//Dat thoi gian moi
 void RTC_SetTime(RTC_Time_t *t);
 
 void RTC_GetTime(RTC_Time_t *t);
-
-void RTC_PrintTime(uint8_t hour, uint8_t min, uint8_t sec, 
-    uint8_t day, uint8_t date, uint8_t month, uint16_t year);
 
 #endif /* __RTC_H */

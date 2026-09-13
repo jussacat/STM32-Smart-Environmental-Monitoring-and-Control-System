@@ -1,4 +1,3 @@
-// Cortex-M startup code using gcc-none-eabi toolchain
 #include <stdint.h>
 #include <string.h>
 
@@ -14,6 +13,20 @@ extern uint32_t _estack;
 extern int main(void);
 
 #pragma GCC optimize("O3")
+
+void Default_Handler(void) {
+    while(1);
+}
+
+void NMI_Handler(void)        __attribute__((weak, alias("Default_Handler")));
+void HardFault_Handler(void)  __attribute__((weak, alias("Default_Handler")));
+void MemManage_Handler(void)  __attribute__((weak, alias("Default_Handler")));
+void BusFault_Handler(void)   __attribute__((weak, alias("Default_Handler")));
+void UsageFault_Handler(void) __attribute__((weak, alias("Default_Handler")));
+void SVC_Handler(void)        __attribute__((weak, alias("Default_Handler")));
+void DebugMon_Handler(void)   __attribute__((weak, alias("Default_Handler")));
+void PendSV_Handler(void)     __attribute__((weak, alias("Default_Handler")));
+void SysTick_Handler(void)    __attribute__((weak, alias("Default_Handler")));
 
 __attribute__ ((naked)) 
 void Reset_Handler(void)
@@ -32,9 +45,20 @@ void Reset_Handler(void)
  ;
 }
 
-void* vectors[128] __attribute__((section(".isr_vector"))) = 
-{
- &_estack,
- Reset_Handler,
- // more IRQ handlers go here
+__attribute__((section(".isr_vector")))
+void (* const vectors[])(void) = 
+{                                                                                                                                                                                
+    (void (*)(void))(&_estack),  // 0: Initial Stack Pointer 
+    Reset_Handler,               // 1: Reset 
+    NMI_Handler,                 // 2: NMI
+    HardFault_Handler,           // 3: HardFault 
+    MemManage_Handler,           // 4: MPU Fault 
+    BusFault_Handler,            // 5: Bus Fault
+    UsageFault_Handler,          // 6: Usage Fault
+    0, 0, 0, 0,                  // 7-10: Reserved
+    SVC_Handler,                 // 11: SVCall (FreeRTOS)
+    DebugMon_Handler,            // 12: Debug Monitor
+    0,                           // 13: Reserved
+    PendSV_Handler,              // 14: PendSV (FreeRTOS)
+    SysTick_Handler,             // 15: SysTick (FreeRTOS)
 };

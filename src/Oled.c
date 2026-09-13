@@ -5,8 +5,6 @@
 
 #define OLED_I2C_ADDR 0x78
 
-static uint8_t OLED_Buffer[1024];
-
 static const uint8_t Font5x8[][5] = {
     {0x00,0x00,0x00,0x00,0x00}, // Space (32)
     {0x00,0x00,0x5F,0x00,0x00}, // !
@@ -120,7 +118,7 @@ static void I2C1_Stop(void){
     I2C1->CR1 |= (1 << 9U); //STOP
 }
 
-/****************************************SSD1306 ******************************/
+/***************************SSD1306 ******************************/
 static void OLED_WriteCmd(uint8_t cmd){
     I2C1_Start();
     I2C1_SendAddress(OLED_I2C_ADDR);
@@ -141,6 +139,10 @@ void OLED_Init(void){
     I2C1_Init();
 
     OLED_WriteCmd(0xAE); //Display OFF
+    
+    OLED_WriteCmd(0xC8); // Flip vertical (Set COM Output Scan Direction)
+    OLED_WriteCmd(0xA1); // Flip horizontal (Set Segment Re-map)
+
     OLED_WriteCmd(0x20); OLED_WriteCmd(0x20); //Page Addressing Mode
     OLED_WriteCmd(0x8D); OLED_WriteCmd(0x14); // Enable Charge Pump
     OLED_WriteCmd(0xAF); // Display ON
@@ -149,7 +151,7 @@ void OLED_Init(void){
 }
 
 void OLED_SetCursor(uint8_t x, uint8_t y){
-    OLED_WriteCmd(0xB0 + y); //Set row (hang ngang)
+    OLED_WriteCmd(0xB0 + y); //Set row
     OLED_WriteCmd(0x00 | (x & 0x0F)); //Low collumn
     OLED_WriteCmd(0x10 | ((x >> 4) & 0x0F)); //High collumn
 }
@@ -178,7 +180,7 @@ void OLED_PrintString(char *str){
     }
 }
 
-void FloatToString(float value, char* buf, char* prefix) {
+extern void FloatToString(float value, char* buf, char* prefix) {
     int nguyen = (int)value;
     int thap_phan = (int)((value - nguyen) * 10);
     if (thap_phan < 0) thap_phan = -thap_phan;
