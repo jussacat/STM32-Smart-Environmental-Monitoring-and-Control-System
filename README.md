@@ -86,28 +86,6 @@ Stack: 256 words (1024 B)                        Stack: 256 words (1024 B)
 6. Block on vTaskDelay(1000)                     6. Transmit Telemetry over USART1
                                                  7. Release xHardwareMutex
                                                  8. Block on vTaskDelay(2500)
-## Real-Time Task Architecture
-
-The real-time application layer consists of two independent, statically bounded periodic tasks managed by the FreeRTOS preemptive kernel:
-
-```text
-+-------------------------------------------------------------------------+
-|                           FreeRTOS Kernel                               |
-|                  (SysTick Interval: 1.0 ms)                             |
-+-------------------------------------------------------------------------+
-        |                                                 |
-Task: vTask_RTC (Priority: 2)                    Task: vTask_DHT22 (Priority: 1)
-Period: 1000 ms                                  Period: 2500 ms
-Stack: 256 words (1024 B)                        Stack: 256 words (1024 B)
-        |                                                 |
-1. Read RTC Registers (I2C2)                     1. Enter Critical Section
-2. Acquire xHardwareMutex                        2. Sample 40-Bit 1-Wire Signal (PA5)
-3. Update Time String on OLED                    3. Exit Critical Section
-4. Transmit Telemetry over USART1                4. Acquire xHardwareMutex
-5. Release xHardwareMutex                        5. Format & Render Data to OLED
-6. Block on vTaskDelay(1000)                     6. Transmit Telemetry over USART1
-                                                 7. Release xHardwareMutex
-                                                 8. Block on vTaskDelay(2500)
 ```
 
 ### Memory Footprint Analysis
